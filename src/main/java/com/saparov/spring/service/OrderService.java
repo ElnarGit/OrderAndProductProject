@@ -4,6 +4,7 @@ import com.saparov.spring.entity.Order;
 import com.saparov.spring.repository.OrderRepository;
 import com.saparov.spring.util.OrderNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,8 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    public List<Order> getAllOrders(){
-        return orderRepository.findAll();
+    public List<Order> getAllOrders(Pageable pageable){
+        return orderRepository.findAll(pageable).getContent();
     }
 
     public Order getOrderById(Long id){

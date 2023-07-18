@@ -4,6 +4,8 @@ import com.saparov.spring.entity.Product;
 import com.saparov.spring.repository.ProductRepository;
 import com.saparov.spring.util.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +16,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public List<Product> getAllProducts(){
-        return productRepository.findAll();
+    public List<Product> getAllProducts(Pageable pageable){
+        return productRepository.findAll(pageable).getContent();
     }
 
     public Product getProductById(Long id){
