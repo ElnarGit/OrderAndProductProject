@@ -3,13 +3,12 @@ package com.saparov.spring.controller;
 import com.saparov.spring.entity.Order;
 import com.saparov.spring.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
@@ -19,25 +18,19 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders(
+    public ResponseEntity<Page<Order>> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ){
         Pageable pageable = PageRequest.of(page, size);
 
-        List<Order> orders = orderService.getAllOrders(pageable);
+        Page<Order> orders = orderService.getAllOrders(pageable);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Long id){
-        Order order = orderService.getOrderById(id);
-
-        if(order != null) {
-            return new ResponseEntity<>(order, HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public Order getOrderById(@PathVariable Long id){
+        return orderService.getOrderById(id);
     }
 
     @PostMapping()
@@ -53,8 +46,9 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long id){
+    public ResponseEntity<String> deleteOrder(@PathVariable Long id){
          orderService.deleteOrder(id);
-         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+         return new ResponseEntity<>("Order deleted", HttpStatus.OK);
     }
 }

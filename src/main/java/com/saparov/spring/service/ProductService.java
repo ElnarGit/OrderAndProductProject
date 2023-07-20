@@ -2,34 +2,43 @@ package com.saparov.spring.service;
 
 import com.saparov.spring.entity.Product;
 import com.saparov.spring.repository.ProductRepository;
-import com.saparov.spring.util.ProductNotFoundException;
+import com.saparov.spring.util.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public List<Product> getAllProducts(Pageable pageable){
+    /*public List<Product> getAllProducts(Pageable pageable){
         return productRepository.findAll(pageable).getContent();
+    }*/
+
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
-    public Product getProductById(Long id){
+    public Product getProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
+                .orElseThrow(() -> new NotFoundException("Product not found with id: " + id));
     }
 
-    public Product createProduct(Product product){
+    @Transactional
+    public Product createProduct(Product product) {
         return productRepository.save(product);
     }
 
-    public void deleteProduct(Long id){
+    @Transactional
+    public void deleteProduct(Long id) {
+        productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Product not found with id: " + id));
+
         productRepository.deleteById(id);
     }
 }
