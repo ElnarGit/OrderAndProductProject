@@ -1,4 +1,4 @@
-package com.saparov.spring.util;
+package com.saparov.spring.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

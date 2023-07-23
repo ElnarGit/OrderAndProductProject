@@ -1,4 +1,4 @@
-package com.saparov.spring.util;
+package com.saparov.spring.exception;
 
 public class NotFoundException extends RuntimeException{
 
