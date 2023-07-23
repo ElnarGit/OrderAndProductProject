@@ -16,10 +16,6 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    /*public List<Product> getAllProducts(Pageable pageable){
-        return productRepository.findAll(pageable).getContent();
-    }*/
-
     public Page<Product> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
@@ -28,6 +24,8 @@ public class ProductService {
         return productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Product not found with id: " + id));
     }
+
+
 
     @Transactional
     public Product createProduct(Product product) {
