@@ -1,7 +1,9 @@
 package com.saparov.spring.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -12,8 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+@Configuration
 @EnableWebSecurity
-public class SpringSecurityConfig {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -23,7 +27,7 @@ public class SpringSecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> {
                     authorize.anyRequest().authenticated();
                 }).httpBasic(Customizer.withDefaults());
@@ -35,7 +39,7 @@ public class SpringSecurityConfig {
 
         UserDetails elnar = User.builder()
                 .username("elnar")
-                .password(passwordEncoder().encode("password"))
+                .password(passwordEncoder().encode("elnar"))
                 .roles("USER")
                 .build();
 
@@ -48,9 +52,3 @@ public class SpringSecurityConfig {
         return new InMemoryUserDetailsManager(elnar, admin);
     }
 }
-
-
-
-
-
-

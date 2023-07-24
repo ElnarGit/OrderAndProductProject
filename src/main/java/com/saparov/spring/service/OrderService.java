@@ -1,13 +1,18 @@
 package com.saparov.spring.service;
 
 import com.saparov.spring.entity.Order;
+import com.saparov.spring.entity.Product;
+import com.saparov.spring.exception.NotFoundException;
 import com.saparov.spring.repository.OrderRepository;
-import com.saparov.spring.util.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -16,8 +21,18 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    public Page<Order> getAllOrders(Pageable pageable){
-        return orderRepository.findAll(pageable);
+    public Map<String,Object> getAllOrders(Pageable pageable){
+
+        Map<String, Object> response = new HashMap<>();
+
+        Page<Order> orderPage =  orderRepository.findAll(pageable);
+        response.put("products",   orderPage.getContent());
+        response.put("currentPage", orderPage.getNumber());
+        response.put("totalItems", orderPage.getTotalElements());
+        response.put("totalPages", orderPage.getTotalPages());
+
+        return response;
+
     }
 
     public Order getOrderById(Long id){
